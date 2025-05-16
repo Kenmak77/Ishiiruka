@@ -381,7 +381,7 @@ void DolphinApp::AfterInit()
 #endif
 
 #ifdef _WIN32
-  if (File::Exists("./Updater-temp.exe") && File::Exists("./Updaterfr.exe"))
+  if (File::Exists("./Updater-temp.exe") && File::Exists("./Updater.exe"))
   {
     File::Delete("./Updater-temp.exe");
   }
@@ -535,7 +535,7 @@ static void RunSystemCommand(const std::string& command)
 
 void DolphinApp::CheckUpdate()
 {
-  std::string url = "https://projectplusgame.com/update.json";
+  std::string url = "https://kenmak77.github.io/skills-github-pages/update.json";
   Common::HttpRequest req{ std::chrono::seconds{10} };
   auto resp = req.Get(url);
   if (!resp)
