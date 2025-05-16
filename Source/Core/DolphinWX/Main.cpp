@@ -381,7 +381,7 @@ void DolphinApp::AfterInit()
 #endif
 
 #ifdef _WIN32
-  if (File::Exists("./Updater-temp.exe") && File::Exists("./Updater.exe"))
+  if (File::Exists("./Updater-temp.exe") && File::Exists("./Updaterfr.exe"))
   {
     File::Delete("./Updater-temp.exe");
   }
