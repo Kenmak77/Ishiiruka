@@ -519,7 +519,7 @@ bool DownloadContent(const std::vector<TodoList::DownloadOp>& to_download,
     bool success = false;
 
     // Tentative aria2c
-    if (aria2_available)
+    if (!success)
     {
       std::string command = "\"" + aria2_path + "\" -x 16 -s 16 -o \"" + out_path + "\" \"" + url + "\"";
       fprintf(log_fp, "Commande aria2c : %s\n", command.c_str());
@@ -529,23 +529,6 @@ bool DownloadContent(const std::vector<TodoList::DownloadOp>& to_download,
         success = true;
       else
         fprintf(log_fp, "aria2c a échoué, tentative HTTP normale...\n");
-    }
-
-    // Fallback HTTP
-    if (!success)
-    {
-      auto resp = req.Get(url);
-      if (!resp || !resp->Succeeded())
-      {
-        fprintf(log_fp, "Téléchargement HTTP échoué pour %s\n", url.c_str());
-        return false;
-      }
-      if (!File::WriteStringToFile(out_path, resp->GetBody()))
-      {
-        fprintf(log_fp, "Échec d'écriture HTTP du fichier %s\n", out_path.c_str());
-        return false;
-      }
-      success = true;
     }
 
     // Lire le fichier téléchargé
