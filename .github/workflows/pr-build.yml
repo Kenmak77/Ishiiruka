@@ -48,10 +48,6 @@ jobs:
           echo "GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
           echo "CURR_DATE=$(date +%Y-%m-%d)" >> $GITHUB_ENV
 
-      - name: "Build Dolphin"
-        shell: cmd
-        run: |
-          msbuild /p:Configuration=Release /p:Platform=x64 ${{ github.workspace }}\Source\Dolphin.sln
 
       - name: "Setup Nuget.exe"
         uses: nuget/setup-nuget@v1
@@ -251,6 +247,16 @@ jobs:
           hidapi \
           python@3.10
 
+      - name: "Build Dolphin"
+        if: success()
+        shell: bash
+        working-directory: ${{ github.workspace }}
+        run: |
+          export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/lib
+          chmod +x ./build-mac.sh && ./build-mac.sh
+          mkdir artifact
+          FILE_NAME=${{ env.CURR_DATE }}-${{ env.GIT_HASH }}-${{ env.GIT_TAG }}-macOS
+          echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
 
       - name: "Install Rust"
         uses: actions-rs/toolchain@v1
