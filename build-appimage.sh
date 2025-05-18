@@ -2,7 +2,7 @@
 # build-online-appimage.sh
 
 ZSYNC_STRING="gh-releases-zsync|jlambert360|FPM-AppImage|latest|Faster_Project_Plus-x86-64.AppImage.zsync"
-APPIMAGE_STRING="Faster_Project_Plus-x86-64.AppImage"
+APPIMAGE_STRING="P+FR.AppImage"
 
 LINUXDEPLOY_PATH="https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous"
 LINUXDEPLOY_FILE="linuxdeploy-x86_64.AppImage"
@@ -66,6 +66,6 @@ UPDATE_INFORMATION="${ZSYNC_STRING}" \
 	./Tools/linuxdeploy-update-plugin --appdir=./AppDir/
 
 
-mv Faster_Project_Plus-$VERSION-x86_64.AppImage Faster_Project_Plus-x86-64.AppImage
+mv Faster_Project_Plus-$VERSION-x86_64.AppImage P+FR.AppImage
 mv Faster_Project_Plus-$VERSION-x86_64.AppImage.zsync Faster_Project_Plus-x86-64.AppImage.zsync
 
