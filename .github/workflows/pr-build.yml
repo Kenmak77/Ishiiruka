@@ -48,7 +48,10 @@ jobs:
           echo "GIT_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
           echo "CURR_DATE=$(date +%Y-%m-%d)" >> $GITHUB_ENV
 
-     
+      - name: "Build Dolphin"
+        shell: cmd
+        run: |
+          msbuild /p:Configuration=Release /p:Platform=x64 ${{ github.workspace }}\Source\Dolphin.sln
 
       - name: "Setup Nuget.exe"
         uses: nuget/setup-nuget@v1
