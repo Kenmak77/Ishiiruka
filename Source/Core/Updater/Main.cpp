@@ -489,55 +489,98 @@ bool ProgressCallback(double total, double now, double, double)
 }
 
 bool DownloadContent(const std::vector<TodoList::DownloadOp>& to_download,
-                     const std::string& content_base_url, const std::string& temp_path)
+                     const std::string& content_base_url,
+                     const std::string& temp_path)
 {
+  std::string exe_dir = File::GetExeDirectory();
+  std::string aria2_path = exe_dir + DIR_SEP + "aria2" + DIR_SEP + "aria2c.exe";
+  bool aria2_available = File::Exists(aria2_path);
+
   Common::HttpRequest req(std::chrono::seconds(30), ProgressCallback);
 
   for (size_t i = 0; i < to_download.size(); i++)
   {
-    auto& download = to_download[i];
-
+    const auto& download = to_download[i];
     std::string hash_filename = HexEncode(download.hash.data(), download.hash.size());
-    UI::SetDescription("Downloading " + download.filename + "... (File " + std::to_string(i + 1) +
-                       " of " + std::to_string(to_download.size()) + ")");
+
+    UI::SetDescription("Téléchargement de " + download.filename +
+                       " (" + std::to_string(i + 1) +
+                       " sur " + std::to_string(to_download.size()) + ")");
     UI::SetMarquee(false);
 
-    // Add slashes where needed.
+    // Générer l'URL
     std::string content_store_path = hash_filename;
     content_store_path.insert(4, "/");
     content_store_path.insert(2, "/");
 
     std::string url = content_base_url + content_store_path;
-    fprintf(log_fp, "Downloading %s ...\n", url.c_str());
+    std::string out_path = temp_path + DIR_SEP + hash_filename;
 
-    auto resp = req.Get(url);
-    if (!resp)
+    bool success = false;
+
+    // Tentative aria2c
+    if (aria2_available)
+    {
+      std::string command = "\"" + aria2_path + "\" -x 16 -s 16 -o \"" + out_path + "\" \"" + url + "\"";
+      fprintf(log_fp, "Commande aria2c : %s\n", command.c_str());
+
+      int result = std::system(command.c_str());
+      if (result == 0 && File::Exists(out_path))
+        success = true;
+      else
+        fprintf(log_fp, "aria2c a échoué, tentative HTTP normale...\n");
+    }
+
+    // Fallback HTTP
+    if (!success)
+    {
+      auto resp = req.Get(url);
+      if (!resp || !resp->Succeeded())
+      {
+        fprintf(log_fp, "Téléchargement HTTP échoué pour %s\n", url.c_str());
+        return false;
+      }
+      if (!File::WriteStringToFile(out_path, resp->GetBody()))
+      {
+        fprintf(log_fp, "Échec d'écriture HTTP du fichier %s\n", out_path.c_str());
+        return false;
+      }
+      success = true;
+    }
+
+    // Lire le fichier téléchargé
+    std::string contents;
+    if (!File::ReadFileToString(out_path, contents))
+    {
+      fprintf(log_fp, "Erreur de lecture : %s\n", out_path.c_str());
       return false;
+    }
 
-    UI::SetMarquee(true);
-    UI::SetDescription("Verifying " + download.filename + "...");
-
-    std::string contents(reinterpret_cast<char*>(resp->data()), resp->size());
     std::optional<std::string> maybe_decompressed = GzipInflate(contents);
     if (!maybe_decompressed)
+    {
+      fprintf(log_fp, "Échec de la décompression gzip\n");
       return false;
+    }
+
     std::string decompressed = std::move(*maybe_decompressed);
 
-    // Check that the downloaded contents have the right hash.
+    // Vérification du hash
     Manifest::Hash contents_hash = ComputeHash(decompressed);
     if (contents_hash != download.hash)
     {
-      fprintf(log_fp, "Wrong hash on downloaded content %s.\n", url.c_str());
+      fprintf(log_fp, "Hash invalide pour %s\n", download.filename.c_str());
       return false;
     }
 
-    std::string out = temp_path + DIR_SEP + hash_filename;
-    if (!File::WriteStringToFile(decompressed, out))
+    // Écriture finale
+    if (!File::WriteStringToFile(temp_path + DIR_SEP + download.filename, decompressed))
     {
-      fprintf(log_fp, "Could not write cache file %s.\n", out.c_str());
+      fprintf(log_fp, "Échec d'écriture du fichier final : %s\n", download.filename.c_str());
       return false;
     }
   }
+
   return true;
 }
 
