@@ -62,7 +62,7 @@ jobs:
         working-directory: ${{ github.workspace }}
         shell: cmd
         run: |
-          git clone https://github.com/jlambert360/FPM-Win-Updater
+          git clone https://github.com/Kenmak77/FPM-Win-Updater
           cd FPM-Win-Updater
           nuget restore ${{ github.workspace }}\FPM-Win-Updater\DolphinUpdater.sln
           msbuild /p:Configuration=Release /p:Platform="Any CPU" ${{ github.workspace }}\FPM-Win-Updater\DolphinUpdater.sln
