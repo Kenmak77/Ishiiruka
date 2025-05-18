@@ -251,16 +251,6 @@ jobs:
           hidapi \
           python@3.10
 
-      - name: "Build Dolphin"
-        if: success()
-        shell: bash
-        working-directory: ${{ github.workspace }}
-        run: |
-          export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/lib
-          chmod +x ./build-mac.sh && ./build-mac.sh
-          mkdir artifact
-          FILE_NAME=${{ env.CURR_DATE }}-${{ env.GIT_HASH }}-${{ env.GIT_TAG }}-macOS
-          echo "FILE_NAME=$FILE_NAME" >> $GITHUB_ENV
 
       - name: "Install Rust"
         uses: actions-rs/toolchain@v1
