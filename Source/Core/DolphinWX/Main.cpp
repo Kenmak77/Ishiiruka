@@ -535,7 +535,7 @@ static void RunSystemCommand(const std::string& command)
 
 void DolphinApp::CheckUpdate()
 {
-  std::string url = "https://kenmak77.github.io/skills-github-pages/update.json";
+  std::string url = "https://update.pplusfr.org/update.json";
   Common::HttpRequest req{ std::chrono::seconds{10} };
   auto resp = req.Get(url);
   if (!resp)
