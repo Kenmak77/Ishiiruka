@@ -66,6 +66,6 @@ UPDATE_INFORMATION="${ZSYNC_STRING}" \
 	./Tools/linuxdeploy-update-plugin --appdir=./AppDir/
 
 
-mv Faster_Project_Plus-$VERSION-x86_64.AppImage P+FR.AppImage
+mv Faster_Project_Plus-$VERSION-x86_64.AppImage Faster_Project_Plus-3.1.2-x86_64.AppImage
 mv Faster_Project_Plus-$VERSION-x86_64.AppImage.zsync Faster_Project_Plus-x86-64.AppImage.zsync
 
