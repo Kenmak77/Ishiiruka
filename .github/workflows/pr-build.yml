@@ -58,16 +58,6 @@ jobs:
         with:
           nuget-version: '5.x'
 
-      - name: "Build Updater"
-        working-directory: ${{ github.workspace }}
-        shell: cmd
-        run: |
-          git clone https://github.com/Kenmak77/FPM-Win-Updater
-          cd FPM-Win-Updater
-          nuget restore ${{ github.workspace }}\FPM-Win-Updater\DolphinUpdater.sln
-          msbuild /p:Configuration=Release /p:Platform="Any CPU" ${{ github.workspace }}\FPM-Win-Updater\DolphinUpdater.sln
-          cd DolphinUpdater\bin\Release
-          copy /b /v /y Updater.exe ${{ github.workspace }}\Binary\x64\
 
       - name: "Build Replay Manager"
         working-directory: ${{ github.workspace }}
