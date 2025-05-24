@@ -9,7 +9,7 @@
 
 namespace Common
 {
-#define VERSION_STR "To install P+FR clicked on update button !!" 
+#define VERSION_STR "To install P+FR clicked on update button !!!" 
 #ifdef _DEBUG
 #define BUILD_TYPE_STR "Debug "
 #elif defined DEBUGFAST
