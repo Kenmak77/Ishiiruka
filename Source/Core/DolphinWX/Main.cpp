@@ -598,7 +598,7 @@ void DolphinApp::UpdateApp()
     std::string args = "\"" + updateLink + "\" \"" + path + "\"";
     
     // Solution 1 (Recommandée) - Console visible avec attente
-    std::string command = "cmd /c start \"\" /wait " + updaterExe + " " + args;
+    std::string command = updaterExe + " " + args;
     
     // OU Solution 2 - Mode silencieux avec log
     // std::string command = "start \"\" /wait /min " + updaterExe + " " + args;
