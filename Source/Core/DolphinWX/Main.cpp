@@ -593,19 +593,17 @@ void DolphinApp::CheckUpdate()
 void DolphinApp::UpdateApp()
 {
 #ifdef _WIN32
-    std::string path = File::GetExeDirectory();
-    std::string updaterExe = "\"" + path + "\\Updater-temp.exe\"";
-    std::string args = "\"" + updateLink + "\" \"" + path + "\"";
-    
-    // Solution 1 (Recommandée) - Console visible avec attente
-    std::string command = updaterExe + " " + args;
-    
-    // OU Solution 2 - Mode silencieux avec log
-    // std::string command = "start \"\" /wait /min " + updaterExe + " " + args;
-    
-    RunSystemCommand(command);
+  std::string path = File::GetExeDirectory();
+  std::string updaterExe = "\"" + path + "\\Updater-temp.exe\"";
+  std::string args = "\"" + updateLink + "\" \"" + path + "\"";
+  
+  // Lance correctement l'updater dans une console et attend la fin
+  std::string command = "cmd /c start \"Updater\" /wait " + updaterExe + " " + args;
+  RunSystemCommand(command);
 #elif defined(__APPLE__)
-    // [Garder le code Mac existant]
+  chdir(File::GetBundleDirectory().c_str());
+  std::string command = "open -a /Applications/Utilities/Terminal.app Contents/Resources/Updater";
+  RunSystemCommand(command);
 #endif
     main_frame->Close();
 }
