@@ -598,14 +598,13 @@ void DolphinApp::UpdateApp()
   std::string args = "\"" + updateLink + "\" \"" + path + "\"";
   
   // Lance correctement l'updater dans une console et attend la fin
-  std::string command = "start \"\" /b Updater-temp.exe \"" + updateLink + "\" \"" + path + "\"";
-  system(command.c_str());
+  std::string command = "Updater.bat \"" + updateLink + "\" \"" + path + "\"";
+  RunSystemCommand(command);
 #elif defined(__APPLE__)
   chdir(File::GetBundleDirectory().c_str());
   std::string command = "open -a /Applications/Utilities/Terminal.app Contents/Resources/Updater";
   RunSystemCommand(command);
 #endif
-    std::this_thread::sleep_for(std::chrono::seconds(1));
     main_frame->Close();
 }
 #endif
