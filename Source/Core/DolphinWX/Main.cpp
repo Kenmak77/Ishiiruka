@@ -532,43 +532,34 @@ void DolphinApp::OnIdle(wxIdleEvent& ev)
 
 #ifdef _WIN32
 #include <windows.h>
+#include <shellapi.h>
 #endif
 
 static void RunSystemCommand(const std::string& command)
 {
 #ifdef _WIN32
-  STARTUPINFOA si = { sizeof(si) };
-  PROCESS_INFORMATION pi;
+  // Extraire le chemin de l’exécutable
+  size_t space_pos = command.find(' ');
+  std::string exe_path = (space_pos != std::string::npos) ? command.substr(0, space_pos) : command;
+  std::string arguments = (space_pos != std::string::npos) ? command.substr(space_pos + 1) : "";
 
-  std::string mutableCmd = command;
+  HINSTANCE result = ShellExecuteA(
+      NULL,            // Pas de fenêtre parente
+      "open",          // Action
+      exe_path.c_str(),// Exécutable
+      arguments.c_str(), // Arguments
+      NULL,            // Répertoire courant
+      SW_SHOWNORMAL);  // Afficher normalement
 
-  BOOL success = CreateProcessA(
-      NULL,
-      mutableCmd.data(),
-      NULL,
-      NULL,
-      FALSE,
-      DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP,
-      NULL,
-      NULL,
-      &si,
-      &pi);
-
-  if (!success)
+  if ((int)result <= 32)
   {
-    DWORD errCode = GetLastError();
-    MessageBoxA(NULL, ("Failed to launch updater. Error code: " + std::to_string(errCode)).c_str(), "Error", MB_ICONERROR);
-  }
-  else
-  {
-    CloseHandle(pi.hProcess);
-    CloseHandle(pi.hThread);
+    std::string error = "Failed to launch updater. ShellExecuteA error code: " + std::to_string((int)result);
+    MessageBoxA(NULL, error.c_str(), "Error", MB_ICONERROR);
   }
 #else
   system(command.c_str());
 #endif
 }
-
 
 void DolphinApp::CheckUpdate()
 {
@@ -630,12 +621,12 @@ void DolphinApp::CheckUpdate()
 void DolphinApp::UpdateApp()
 {
 #ifdef _WIN32
-  std::string path = File::GetExeDirectory();
-  std::string updaterExe = path + "\\Updater-temp.exe";
-  std::string args = "\"" + updateLink + "\" \"" + path + "\"";
-  std::string command = "\"" + updaterExe + "\" " + args;
+std::string path = File::GetExeDirectory();
+std::string updaterExe = path + "\\Updater-temp.exe";
+std::string args = "\"" + updateLink + "\" \"" + path + "\"";
+std::string command = "\"" + updaterExe + "\" " + args;
 
-  RunSystemCommand(command);
+RunSystemCommand(command);
 #elif defined(__APPLE__)
   chdir(File::GetBundleDirectory().c_str());
   std::string command = "open -a /Applications/Utilities/Terminal.app Contents/Resources/Updater";
