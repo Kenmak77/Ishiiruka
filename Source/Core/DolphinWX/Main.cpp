@@ -569,23 +569,6 @@ static void RunSystemCommand(const std::string& command)
 #endif
 }
 
-void DolphinApp::UpdateApp()
-{
-#ifdef _WIN32
-  std::string path = File::GetExeDirectory();
-  std::string updaterExe = path + "\\Updater-temp.exe";
-  std::string args = "\"" + updateLink + "\" \"" + path + "\"";
-  std::string command = "\"" + updaterExe + "\" " + args;
-
-  RunSystemCommand(command);
-#elif defined(__APPLE__)
-  chdir(File::GetBundleDirectory().c_str());
-  std::string command = "open -a /Applications/Utilities/Terminal.app Contents/Resources/Updater";
-  RunSystemCommand(command);
-#endif
-}
-
-#endif  //  Et là c’est le bon endroit pour fermer le bloc _WIN32 || __APPLE__
 
 void DolphinApp::CheckUpdate()
 {
@@ -660,6 +643,7 @@ void DolphinApp::UpdateApp()
 #endif
 }
 
+#endif  // ✅ Et là c’est le bon endroit pour fermer le bloc _WIN32 || __APPLE__
 // ------------
 // Talk to GUI
 
