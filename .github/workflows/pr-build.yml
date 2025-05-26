@@ -77,7 +77,7 @@ jobs:
           xcopy /E /V /Y /I .\Data\Launcher .\Binary\x64\Launcher
           xcopy /E /V /Y /I .\Data\SharpCompress.dll .\Binary\x64\
           xcopy /E /V /Y /I .\Data\Updater.exe .\Binary\x64\
-	  xcopy /E /V /Y /I .\Data\run_updater.bat .\Binary\x64\
+          xcopy /E /V /Y /I .\Data\run_updater.bat .\Binary\x64\
           copy Changelog.txt .\Binary\x64\
           cd .\Binary\x64\
           rm -r Languages
