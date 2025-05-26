@@ -533,6 +533,7 @@ void DolphinApp::OnIdle(wxIdleEvent& ev)
 
 static void RunSystemCommand(const std::string& command)
 {
+#ifdef _WIN32
   STARTUPINFOA si = { sizeof(si) };
   PROCESS_INFORMATION pi;
 
@@ -561,7 +562,6 @@ static void RunSystemCommand(const std::string& command)
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
   }
-
 #else
   system(command.c_str());
 #endif
