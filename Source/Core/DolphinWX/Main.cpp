@@ -77,6 +77,9 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <dlfcn.h>
 #include <unistd.h>
+#ifdef _WIN32
+#include <windows.h>
+#include <shellapi.h>
 #endif
 
 #ifdef _WIN32
@@ -536,7 +539,7 @@ static void RunSystemCommand(const std::string& command)
 
   std::string params = "/C " + command;
   sei.lpParameters = params.c_str();
-  sei.nShow = SW_SHOWMINNOACTIVE; // Ou SW_HIDE si tu veux cacher complètement
+  sei.nShow = SW_SHOWMINNOACTIVE; // ou SW_HIDE
 
   if (!ShellExecuteExA(&sei))
   {
@@ -607,12 +610,12 @@ void DolphinApp::CheckUpdate()
 void DolphinApp::UpdateApp()
 {
 #ifdef _WIN32
-  std::string path = File::GetExeDirectory();
-  std::string updaterExe = path + "\\Updater-temp.exe";
-  std::string args = "\"" + updateLink + "\" \"" + path + "\"";
+ std::string path = File::GetExeDirectory();
+ std::string updaterExe = path + "\\Updater-temp.exe";
+ std::string args = "\"" + updateLink + "\" \"" + path + "\"";
+ std::string command = "\"" + updaterExe + "\" " + args;
 
-  std::string command = "\"" + updaterExe + "\" " + args;
-  RunSystemCommand(command); // ShellExecuteExA sera utilisé à l'intérieur
+RunSystemCommand(command);
   #elif defined(__APPLE__)
   chdir(File::GetBundleDirectory().c_str());
   std::string command = "open -a /Applications/Utilities/Terminal.app Contents/Resources/Updater";
