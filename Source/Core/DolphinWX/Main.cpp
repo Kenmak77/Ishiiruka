@@ -643,7 +643,6 @@ void DolphinApp::UpdateApp()
   RunSystemCommand(command);
 #endif
 }
-#endif
 
 // ------------
 // Talk to GUI
