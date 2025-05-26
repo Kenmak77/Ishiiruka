@@ -621,12 +621,22 @@ void DolphinApp::CheckUpdate()
 void DolphinApp::UpdateApp()
 {
 #ifdef _WIN32
-std::string path = File::GetExeDirectory();
-std::string updaterExe = path + "\\Updater-temp.exe";
-std::string args = "\"" + updateLink + "\" \"" + path + "\"";
-std::string command = "\"" + updaterExe + "\" " + args;
+  std::string path = File::GetExeDirectory();
+  std::string updaterExe = path + "\\Updater-temp.exe";
+  std::string args = "\"" + updateLink + "\" \"" + path + "\"";
+  std::string batPath = path + "\\run_updater.bat";
+
+std::string batContent =
+    "@echo off\r\n"
+    "timeout /t 1 >nul\r\n"
+    "start \"\" \"" + updaterExe + "\" " + args + "\r\n";
+
+File::WriteStringToFile(batContent, batPath);
 
 RunSystemCommand(command);
+
+main_frame->Close();
+
 #elif defined(__APPLE__)
   chdir(File::GetBundleDirectory().c_str());
   std::string command = "open -a /Applications/Utilities/Terminal.app Contents/Resources/Updater";
