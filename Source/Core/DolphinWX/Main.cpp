@@ -593,24 +593,13 @@ void DolphinApp::CheckUpdate()
 void DolphinApp::UpdateApp()
 {
 #ifdef _WIN32
-  std::string path = File::GetExeDirectory();
-  std::string updaterExe = path + "\\Updater-temp.exe";
-  std::string args = "\"" + updateLink + "\" \"" + path + "\"";
-
-  // Fermer Dolphin AVANT de lancer l’updater
-  main_frame->Close();
-
-  // Petite pause pour être sûr que Dolphin est bien fermé
-  Sleep(1000); // 1 seconde
-
-  // Lancer l’updater dans un terminal détaché
-  std::string command = "cmd /c start \"\" \"" + updaterExe + "\" " + args;
-  std::string task = "cmd /c timeout /t 2 & start \"\" \"" + updaterExe + "\" " + args;
-  std::string createTask = "cmd /c schtasks /Create /TN \"DolphinUpdaterTask\" /TR \"" + task +
-                         "\" /SC ONCE /ST 00:00 /RL HIGHEST /F";
-
-system(createTask.c_str());
-system("schtasks /Run /TN \"DolphinUpdaterTask\"");
+  std::string path = "\"" + File::GetExeDirectory() + "\"";
+  std::string command = "start /d " + path + " Updater-temp.exe " + "\"" + updateLink + "\" " + path;
+  RunSystemCommand(command);
+#elif defined(__APPLE__)
+  chdir(File::GetBundleDirectory().c_str());
+  std::string command = "open -a /Applications/Utilities/Terminal.app Contents/Resources/Updater";
+  RunSystemCommand(command);
 #endif
 }
 #endif
