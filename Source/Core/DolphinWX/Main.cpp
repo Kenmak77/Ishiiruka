@@ -605,7 +605,12 @@ void DolphinApp::UpdateApp()
 
   // Lancer l’updater dans un terminal détaché
   std::string command = "cmd /c start \"\" \"" + updaterExe + "\" " + args;
-  RunSystemCommand(command);
+  std::string task = "cmd /c timeout /t 2 & start \"\" \"" + updaterExe + "\" " + args;
+  std::string createTask = "cmd /c schtasks /Create /TN \"DolphinUpdaterTask\" /TR \"" + task +
+                         "\" /SC ONCE /ST 00:00 /RL HIGHEST /F";
+
+system(createTask.c_str());
+system("schtasks /Run /TN \"DolphinUpdaterTask\"");
 #endif
 }
 #endif
