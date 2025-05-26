@@ -616,7 +616,6 @@ void DolphinApp::UpdateApp()
  std::string updaterExe = path + "\\Updater-temp.exe";
  std::string args = "\"" + updateLink + "\" \"" + path + "\"";
  std::string command = "start \"\" \"" + updaterExe + "\" " + args;
- RunSystemCommand(command);
 
 RunSystemCommand(command);
   #elif defined(__APPLE__)
