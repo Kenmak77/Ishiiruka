@@ -529,6 +529,8 @@ void DolphinApp::OnIdle(wxIdleEvent& ev)
 }
 
 #if defined(_WIN32) || defined(__APPLE__)
+#include <windows.h>
+
 static void RunSystemCommand(const std::string& command)
 {
   STARTUPINFOA si = { sizeof(si) };
@@ -559,6 +561,7 @@ static void RunSystemCommand(const std::string& command)
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
   }
+}
 #else
   system(command.c_str());
 #endif
