@@ -77,6 +77,8 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <dlfcn.h>
 #include <unistd.h>
+#endif
+
 #ifdef _WIN32
 #include <windows.h>
 #include <shellapi.h>
