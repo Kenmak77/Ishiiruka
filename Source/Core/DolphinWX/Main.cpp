@@ -597,8 +597,8 @@ void DolphinApp::UpdateApp()
   std::string updaterExe = "\"" + path + "\\Updater-temp.exe\"";
   std::string args = "\"" + updateLink + "\" \"" + path + "\"";
 
-  std::string command = "Updater.bat " + args;
-
+  std::string command = "cmd /c start \"\" \"" + updaterExe + "\" " + args;
+  RunSystemCommand(command);
   main_frame->Close();  //  Ferme d'abord Dolphin
 
   RunSystemCommand(command);  //  Puis lance l'updater
