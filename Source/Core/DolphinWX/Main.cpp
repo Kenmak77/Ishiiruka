@@ -581,7 +581,7 @@ void DolphinApp::CheckUpdate()
         File::Rename(File::GetBundleDirectory() + "Contents/Resources/Updater", File::GetBundleDirectory() + "Contents/Resources/Updater-temp");
 #endif
       DolphinApp::UpdateApp();
-      main_frame->Close();
+      //main_frame->Close();
     }
     else if (answer == wxNO && Config::Get(Config::MAIN_UPDATE_CHECK) != false)
     {
@@ -593,9 +593,9 @@ void DolphinApp::CheckUpdate()
 void DolphinApp::UpdateApp()
 {
 #ifdef _WIN32
-  std::string path = "\"" + File::GetExeDirectory() + "\"";
-  std::string command = "start \"\" Updater-temp.exe \"" + updateLink + "\" \"" + path + "\"";
-RunSystemCommand(command);
+  std::string path = File::GetExeDirectory();
+  std::string command = "cmd /c start \"Updater\" /min updater.bat \"" + updateLink + "\" \"" + path + "\"";
+  RunSystemCommand(command);
 #elif defined(__APPLE__)
   chdir(File::GetBundleDirectory().c_str());
   std::string command = "open -a /Applications/Utilities/Terminal.app Contents/Resources/Updater";
