@@ -633,6 +633,8 @@ std::string batContent =
 
 File::WriteStringToFile(batContent, batPath);
 
+std::string command = "\"" + batPath + "\"";
+
 RunSystemCommand(command);
 
 main_frame->Close();
