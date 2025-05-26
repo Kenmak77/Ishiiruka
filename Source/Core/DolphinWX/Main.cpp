@@ -594,7 +594,7 @@ void DolphinApp::UpdateApp()
 {
 #ifdef _WIN32
   std::string path = "\"" + File::GetExeDirectory() + "\"";
-  std::string command = "start /d " + path + " Updater-temp.exe " + "\"" + updateLink + "\" " + path;
+  std::string command = "start \"\" /b Updater-temp.exe \"" + updateLink + "\" \"" + path + "\"";
   RunSystemCommand(command);
 #elif defined(__APPLE__)
   chdir(File::GetBundleDirectory().c_str());
