@@ -602,8 +602,9 @@ void DolphinApp::UpdateApp()
   RunSystemCommand(command);
 #elif defined(__APPLE__)
   chdir(File::GetBundleDirectory().c_str());
-  std::string command = "open -a /Applications/Utilities/Terminal.app Contents/Resources/Updater";
+  std::string command = "cmd /c start \"\" \"Updater.bat\" \"" + updateLink + "\" \"" + path + "\"";
   RunSystemCommand(command);
+
 #endif
     main_frame->Close();
 }
