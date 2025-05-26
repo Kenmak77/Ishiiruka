@@ -527,7 +527,21 @@ void DolphinApp::OnIdle(wxIdleEvent& ev)
 static void RunSystemCommand(const std::string& command)
 {
 #ifdef _WIN32
-  _wsystem(UTF8ToUTF16(command).c_str());
+  SHELLEXECUTEINFOA sei = { 0 };
+  sei.cbSize = sizeof(sei);
+  sei.fMask = SEE_MASK_NOCLOSEPROCESS;
+  sei.hwnd = NULL;
+  sei.lpVerb = "open";
+  sei.lpFile = "cmd.exe";
+
+  std::string params = "/C " + command;
+  sei.lpParameters = params.c_str();
+  sei.nShow = SW_SHOWMINNOACTIVE; // Ou SW_HIDE si tu veux cacher complètement
+
+  if (!ShellExecuteExA(&sei))
+  {
+    MessageBoxA(NULL, "Failed to launch updater", "Error", MB_ICONERROR);
+  }
 #else
   system(command.c_str());
 #endif
@@ -581,7 +595,7 @@ void DolphinApp::CheckUpdate()
         File::Rename(File::GetBundleDirectory() + "Contents/Resources/Updater", File::GetBundleDirectory() + "Contents/Resources/Updater-temp");
 #endif
       DolphinApp::UpdateApp();
-      //main_frame->Close();
+      main_frame->Close();
     }
     else if (answer == wxNO && Config::Get(Config::MAIN_UPDATE_CHECK) != false)
     {
@@ -594,9 +608,12 @@ void DolphinApp::UpdateApp()
 {
 #ifdef _WIN32
   std::string path = File::GetExeDirectory();
-  std::string command = "cmd /c start \"Updater\" /min updater.bat \"" + updateLink + "\" \"" + path + "\"";
-  RunSystemCommand(command);
-#elif defined(__APPLE__)
+  std::string updaterExe = path + "\\Updater-temp.exe";
+  std::string args = "\"" + updateLink + "\" \"" + path + "\"";
+
+  std::string command = "\"" + updaterExe + "\" " + args;
+  RunSystemCommand(command); // ShellExecuteExA sera utilisé à l'intérieur
+  #elif defined(__APPLE__)
   chdir(File::GetBundleDirectory().c_str());
   std::string command = "open -a /Applications/Utilities/Terminal.app Contents/Resources/Updater";
   RunSystemCommand(command);
