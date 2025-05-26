@@ -596,19 +596,16 @@ void DolphinApp::UpdateApp()
   std::string path = File::GetExeDirectory();
   std::string updaterExe = "\"" + path + "\\Updater-temp.exe\"";
   std::string args = "\"" + updateLink + "\" \"" + path + "\"";
-  
-  // Lance correctement l'updater dans une console et attend la fin
-  std::string command = "Updater.bat \"" + updateLink + "\" \"" + path + "\"";
-  RunSystemCommand(command);
-#elif defined(__APPLE__)
-  chdir(File::GetBundleDirectory().c_str());
-  std::string command = "cmd /c start \"\" \"Updater.bat\" \"" + updateLink + "\" \"" + path + "\"";
-  RunSystemCommand(command);
 
+  std::string command = "Updater.bat " + args;
+
+  main_frame->Close();  // ✅ Ferme d'abord Dolphin
+
+  RunSystemCommand(command);  // 🔁 Puis lance l'updater
+#elif defined(__APPLE__)
+  // ...
 #endif
-    main_frame->Close();
 }
-#endif
 
 // ------------
 // Talk to GUI
