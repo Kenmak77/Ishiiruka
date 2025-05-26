@@ -594,16 +594,18 @@ void DolphinApp::UpdateApp()
 {
 #ifdef _WIN32
   std::string path = File::GetExeDirectory();
-  std::string updaterExe = "\"" + path + "\\Updater-temp.exe\"";
+  std::string updaterExe = path + "\\Updater-temp.exe";
   std::string args = "\"" + updateLink + "\" \"" + path + "\"";
 
+  // Fermer Dolphin AVANT de lancer l’updater
+  main_frame->Close();
+
+  // Petite pause pour être sûr que Dolphin est bien fermé
+  Sleep(1000); // 1 seconde
+
+  // Lancer l’updater dans un terminal détaché
   std::string command = "cmd /c start \"\" \"" + updaterExe + "\" " + args;
   RunSystemCommand(command);
-  main_frame->Close();  //  Ferme d'abord Dolphin
-
-  RunSystemCommand(command);  //  Puis lance l'updater
-#elif defined(__APPLE__)
-  // ...
 #endif
 }
 #endif
