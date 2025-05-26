@@ -529,7 +529,10 @@ void DolphinApp::OnIdle(wxIdleEvent& ev)
 }
 
 #if defined(_WIN32) || defined(__APPLE__)
+
+#ifdef _WIN32
 #include <windows.h>
+#endif
 
 static void RunSystemCommand(const std::string& command)
 {
@@ -537,12 +540,11 @@ static void RunSystemCommand(const std::string& command)
   STARTUPINFOA si = { sizeof(si) };
   PROCESS_INFORMATION pi;
 
-  // Command must be writable for CreateProcess
   std::string mutableCmd = command;
 
   BOOL success = CreateProcessA(
       NULL,
-      mutableCmd.data(), // mutable C-string
+      mutableCmd.data(),
       NULL,
       NULL,
       FALSE,
@@ -554,11 +556,11 @@ static void RunSystemCommand(const std::string& command)
 
   if (!success)
   {
-    MessageBoxA(NULL, "Failed to launch updater", "Error", MB_ICONERROR);
+    DWORD errCode = GetLastError();
+    MessageBoxA(NULL, ("Failed to launch updater. Error code: " + std::to_string(errCode)).c_str(), "Error", MB_ICONERROR);
   }
   else
   {
-    // Close handles since we're not waiting for the child
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
   }
@@ -566,6 +568,8 @@ static void RunSystemCommand(const std::string& command)
   system(command.c_str());
 #endif
 }
+
+#endif  // Fin de #if defined(_WIN32) || defined(__APPLE__)
 
 void DolphinApp::CheckUpdate()
 {
