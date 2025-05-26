@@ -561,7 +561,7 @@ static void RunSystemCommand(const std::string& command)
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
   }
-}
+
 #else
   system(command.c_str());
 #endif
