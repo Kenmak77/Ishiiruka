@@ -531,21 +531,33 @@ void DolphinApp::OnIdle(wxIdleEvent& ev)
 #if defined(_WIN32) || defined(__APPLE__)
 static void RunSystemCommand(const std::string& command)
 {
-#ifdef _WIN32
-  SHELLEXECUTEINFOA sei = { 0 };
-  sei.cbSize = sizeof(sei);
-  sei.fMask = SEE_MASK_NOCLOSEPROCESS;
-  sei.hwnd = NULL;
-  sei.lpVerb = "open";
-  sei.lpFile = "cmd.exe";
+  STARTUPINFOA si = { sizeof(si) };
+  PROCESS_INFORMATION pi;
 
-  std::string params = "/C " + command;
-  sei.lpParameters = params.c_str();
-  sei.nShow = SW_SHOWMINNOACTIVE; // ou SW_HIDE
+  // Command must be writable for CreateProcess
+  std::string mutableCmd = command;
 
-  if (!ShellExecuteExA(&sei))
+  BOOL success = CreateProcessA(
+      NULL,
+      mutableCmd.data(), // mutable C-string
+      NULL,
+      NULL,
+      FALSE,
+      DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP,
+      NULL,
+      NULL,
+      &si,
+      &pi);
+
+  if (!success)
   {
     MessageBoxA(NULL, "Failed to launch updater", "Error", MB_ICONERROR);
+  }
+  else
+  {
+    // Close handles since we're not waiting for the child
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
   }
 #else
   system(command.c_str());
@@ -614,8 +626,7 @@ void DolphinApp::UpdateApp()
 #ifdef _WIN32
  std::string path = File::GetExeDirectory();
  std::string updaterExe = path + "\\Updater-temp.exe";
- std::string args = "\"" + updateLink + "\" \"" + path + "\"";
- std::string command = "cmd /C start \"\" \"" + updaterExe + "\" " + args;
+ std::string args = "\"" + updaterExe + "\" \"" + updateLink + "\" \"" + path + "\"";
 
 RunSystemCommand(command);
   #elif defined(__APPLE__)
