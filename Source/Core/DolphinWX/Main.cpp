@@ -626,6 +626,14 @@ void DolphinApp::UpdateApp()
   std::string args = "\"" + updateLink + "\" \"" + path + "\"";
   std::string batPath = path + "\\run_updater.bat";
 
+  std::string safeArgs = args;
+size_t pos = 0;
+while ((pos = safeArgs.find('%', pos)) != std::string::npos)
+{
+    safeArgs.replace(pos, 1, "%%");
+    pos += 2; // avancer après "%%"
+}
+
 std::string batContent =
     "@echo off\r\n"
     "timeout /t 1 >nul\r\n"
@@ -637,7 +645,7 @@ std::string command = "\"" + batPath + "\"";
 
 RunSystemCommand(command);
 
-main_frame->Close();
+wxGetApp().ExitMainLoop();
 
 #elif defined(__APPLE__)
   chdir(File::GetBundleDirectory().c_str());
