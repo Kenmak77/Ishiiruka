@@ -599,13 +599,14 @@ void DolphinApp::UpdateApp()
 
   std::string command = "Updater.bat " + args;
 
-  main_frame->Close();  // ✅ Ferme d'abord Dolphin
+  main_frame->Close();  //  Ferme d'abord Dolphin
 
-  RunSystemCommand(command);  // 🔁 Puis lance l'updater
+  RunSystemCommand(command);  //  Puis lance l'updater
 #elif defined(__APPLE__)
   // ...
 #endif
 }
+#endif
 
 // ------------
 // Talk to GUI
