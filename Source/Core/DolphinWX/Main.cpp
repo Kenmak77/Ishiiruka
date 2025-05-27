@@ -80,11 +80,6 @@
 #endif
 
 #ifdef _WIN32
-#include <windows.h>
-#include <shellapi.h>
-#endif
-
-#ifdef _WIN32
 
 // Applications exporting this symbol with this value will be automatically
 // directed to the high-performance GPU on Nvidia Optimus systems with
@@ -529,33 +524,10 @@ void DolphinApp::OnIdle(wxIdleEvent& ev)
 }
 
 #if defined(_WIN32) || defined(__APPLE__)
-
-#ifdef _WIN32
-#include <windows.h>
-#include <shellapi.h>
-#endif
-
 static void RunSystemCommand(const std::string& command)
 {
 #ifdef _WIN32
-  // Extraire le chemin de l’exécutable
-  size_t space_pos = command.find(' ');
-  std::string exe_path = (space_pos != std::string::npos) ? command.substr(0, space_pos) : command;
-  std::string arguments = (space_pos != std::string::npos) ? command.substr(space_pos + 1) : "";
-
-  HINSTANCE result = ShellExecuteA(
-      NULL,            // Pas de fenêtre parente
-      "open",          // Action
-      exe_path.c_str(),// Exécutable
-      arguments.c_str(), // Arguments
-      NULL,            // Répertoire courant
-      SW_SHOWNORMAL);  // Afficher normalement
-
-  if ((int)result <= 32)
-  {
-    std::string error = "Failed to launch updater. ShellExecuteA error code: " + std::to_string((int)result);
-    MessageBoxA(NULL, error.c_str(), "Error", MB_ICONERROR);
-  }
+  _wsystem(UTF8ToUTF16(command).c_str());
 #else
   system(command.c_str());
 #endif
@@ -621,48 +593,17 @@ void DolphinApp::CheckUpdate()
 void DolphinApp::UpdateApp()
 {
 #ifdef _WIN32
-  std::string path = File::GetExeDirectory();
-  std::string updaterExe = path + "\\Updater-temp.exe";
-  std::string args = "\"" + updaterExe + "\" \"" + updateLink + "\" \"" + path + "\"";
-
-  STARTUPINFOA si = { sizeof(si) };
-  PROCESS_INFORMATION pi;
-
-  std::string mutableArgs = args;
-
-  BOOL success = CreateProcessA(
-      NULL,
-      mutableArgs.data(),
-      NULL,
-      NULL,
-      FALSE,
-      DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP,
-      NULL,
-      NULL,
-      &si,
-      &pi);
-
-  if (!success)
-  {
-    DWORD err = GetLastError();
-    MessageBoxA(NULL, ("Failed to launch updater. Error: " + std::to_string(err)).c_str(), "Error", MB_ICONERROR);
-  }
-  else
-  {
-    CloseHandle(pi.hProcess);
-    CloseHandle(pi.hThread);
-  }
-
-  wxGetApp().ExitMainLoop();
-
+  std::string path = "\"" + File::GetExeDirectory() + "\"";
+  std::string command = "start /d " + path + " Updater-temp.exe " + "\"" + updateLink + "\" " + path;
+  RunSystemCommand(command);
 #elif defined(__APPLE__)
   chdir(File::GetBundleDirectory().c_str());
   std::string command = "open -a /Applications/Utilities/Terminal.app Contents/Resources/Updater";
   RunSystemCommand(command);
 #endif
 }
+#endif
 
-#endif  // ✅ Et là c’est le bon endroit pour fermer le bloc _WIN32 || __APPLE__
 // ------------
 // Talk to GUI
 
