@@ -623,29 +623,37 @@ void DolphinApp::UpdateApp()
 #ifdef _WIN32
   std::string path = File::GetExeDirectory();
   std::string updaterExe = path + "\\Updater-temp.exe";
-  std::string args = "\"" + updateLink + "\" \"" + path + "\"";
-  std::string batPath = path + "\\run_updater.bat";
+  std::string args = "\"" + updaterExe + "\" \"" + updateLink + "\" \"" + path + "\"";
 
-  std::string safeArgs = args;
-size_t pos = 0;
-while ((pos = safeArgs.find('%', pos)) != std::string::npos)
-{
-    safeArgs.replace(pos, 1, "%%");
-    pos += 2; // avancer après "%%"
-}
+  STARTUPINFOA si = { sizeof(si) };
+  PROCESS_INFORMATION pi;
 
-std::string batContent =
-    "@echo off\r\n"
-    "timeout /t 1 >nul\r\n"
-    "start \"\" \"" + updaterExe + "\" " + safeArgs + "\r\n";
+  std::string mutableArgs = args;
 
-File::WriteStringToFile(batContent, batPath);
+  BOOL success = CreateProcessA(
+      NULL,
+      mutableArgs.data(),
+      NULL,
+      NULL,
+      FALSE,
+      DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP,
+      NULL,
+      NULL,
+      &si,
+      &pi);
 
-std::string command = "\"" + batPath + "\"";
+  if (!success)
+  {
+    DWORD err = GetLastError();
+    MessageBoxA(NULL, ("Failed to launch updater. Error: " + std::to_string(err)).c_str(), "Error", MB_ICONERROR);
+  }
+  else
+  {
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+  }
 
-RunSystemCommand(command);
-
-wxGetApp().ExitMainLoop();
+  wxGetApp().ExitMainLoop();
 
 #elif defined(__APPLE__)
   chdir(File::GetBundleDirectory().c_str());
