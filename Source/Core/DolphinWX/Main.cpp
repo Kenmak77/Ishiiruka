@@ -637,7 +637,7 @@ while ((pos = safeArgs.find('%', pos)) != std::string::npos)
 std::string batContent =
     "@echo off\r\n"
     "timeout /t 1 >nul\r\n"
-    "start \"\" \"" + updaterExe + "\" " + args + "\r\n";
+    "start \"\" \"" + updaterExe + "\" " + safeargs + "\r\n";
 
 File::WriteStringToFile(batContent, batPath);
 
