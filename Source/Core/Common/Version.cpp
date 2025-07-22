@@ -1,7 +1,7 @@
 // Copyright 2008 Dolphin Emulator Project
 // Licensed under GPLv2+
 // Refer to the license.txt file included.
-//FPM v3.1.2 P+FR 1.3.3
+//FPM v3.1.2 P+FR 1.3.3 &
 
 #include <string>
 #include "Common/Version.h"
