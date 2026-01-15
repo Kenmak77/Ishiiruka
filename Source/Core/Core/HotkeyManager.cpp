@@ -356,10 +356,15 @@ void HotkeyManager::LoadDefaults(const ControllerInterface& ciface)
   set_key_expression(HK_PLAY_PAUSE, "`F10`");
 #ifdef _WIN32
   set_key_expression(HK_STOP, "ESCAPE");
-  set_key_expression(HK_FULLSCREEN, ALT + " & RETURN");
+   set_key_expression(
+    HK_FULLSCREEN,
+    std::string("((LMENU | RMENU) & !(LSHIFT | RSHIFT) & !(LCONTROL | RCONTROL)) & RETURN | `F11`")
+);
 #else
   set_key_expression(HK_STOP, "Escape");
-  set_key_expression(HK_FULLSCREEN, ALT + " & Return");
+  set_key_expression(HK_FULLSCREEN,
+    std::string("((LMENU | RMENU) & !(LSHIFT | RSHIFT) & !(LCONTROL | RCONTROL)) & RETURN | `F11`")
+);
 #endif
   set_key_expression(HK_STEP, NON + " & `F11`");
   set_key_expression(HK_STEP_OVER, NON + " & `F10`");

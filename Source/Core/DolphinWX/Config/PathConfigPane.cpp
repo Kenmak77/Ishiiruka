@@ -14,6 +14,8 @@
 #include <wx/listbox.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
+#include <wx/filepicker.h>
+#include <wx/textctrl.h>
 
 #include "Common/FileUtil.h"
 #include "Core/ConfigManager.h"
@@ -51,25 +53,22 @@ void PathConfigPane::InitializeGUI()
     new wxDirPickerCtrl(this, wxID_ANY, wxEmptyString, _("Choose a dump directory:"),
       wxDefaultPosition, wxDefaultSize, wxDIRP_USE_TEXTCTRL | wxDIRP_SMALL);
 
-  // 1. On récupère la config actuelle
-  std::string current_sd = SConfig::GetInstance().m_strWiiSDCardPath;
+  // --- PARTIE CARTE SD (FORCAGE RELATIF) ---
 
-  // 2. Si la config est vide, on définit le chemin par défaut
+// 1. Calcul du chemin
+  std::string current_sd = SConfig::GetInstance().m_strWiiSDCardPath;
   if (current_sd.empty())
   {
       current_sd = "../user/wii/sd.raw";
       SConfig::GetInstance().m_strWiiSDCardPath = current_sd;
-      // Optionnel : File::SetUserPath(F_WIISDCARD_IDX, current_sd);
   }
 
-  // 3. On crée l'objet UNE SEULE FOIS avec le bon chemin
+  // 2. Création de l'objet (Utilisation de wxFLP_USE_TEXTCTRL)
+  // Note : On utilise wxFLP_SMALL pour rester cohérent avec ton code
   m_wii_sdcard_filepicker = new wxFilePickerCtrl(
-    this, wxID_ANY, 
-    StrToWxStr(current_sd), 
-    _("Choose an SD Card file:"),  
-    wxFileSelectorDefaultWildcardStr, 
-    wxDefaultPosition, wxDefaultSize,  
-    wxFLP_USE_TEXTCTRL | wxFLP_SMALL);
+    this, wxID_ANY, StrToWxStr(current_sd), 
+    _("Choose an SD Card file:"), wxFileSelectorDefaultWildcardStr,
+    wxDefaultPosition, wxDefaultSize, wxFLP_USE_TEXTCTRL | wxFLP_SMALL);
 
 // 1. Définir les chemins que l'on veut forcer
   wxArrayString paths_to_add;
@@ -228,9 +227,17 @@ void PathConfigPane::OnDefaultISOChanged(wxCommandEvent& event)
 
 void PathConfigPane::OnSdCardPathChanged(wxCommandEvent& event)
 {
-  std::string sd_card_path = WxStrToStr(m_wii_sdcard_filepicker->GetPath());
-  SConfig::GetInstance().m_strWiiSDCardPath = sd_card_path;
-  File::SetUserPath(F_WIISDCARD_IDX, sd_card_path);
+    // On vérifie si m_wii_sdcard_filepicker existe (n'est pas nullptr)
+    if (m_wii_sdcard_filepicker)
+    {
+        // On récupère le chemin actuel
+        wxString path_wx = m_wii_sdcard_filepicker->GetPath();
+        std::string sd_path = WxStrToStr(path_wx);
+
+        // Mise à jour de la configuration
+        SConfig::GetInstance().m_strWiiSDCardPath = sd_path;
+        File::SetUserPath(F_WIISDCARD_IDX, sd_path);
+    }
 }
 
 void PathConfigPane::OnNANDRootChanged(wxCommandEvent& event)

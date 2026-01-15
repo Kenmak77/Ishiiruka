@@ -60,7 +60,7 @@ const ConfigInfo<std::string> GFX_DUMP_CODEC{{System::GFX, "Settings", "DumpCode
 const ConfigInfo<std::string> GFX_DUMP_PATH{{System::GFX, "Settings", "DumpPath"}, ""};
 const ConfigInfo<int> GFX_BITRATE_KBPS{{System::GFX, "Settings", "BitrateKbps"}, 2500};
 const ConfigInfo<bool> GFX_INTERNAL_RESOLUTION_FRAME_DUMPS{
-    {System::GFX, "Settings", "InternalResolutionFrameDumps"}, 0};
+    {System::GFX, "Settings", "InternalResolutionFrameDumps"}, 1};
 const ConfigInfo<bool> GFX_ENABLE_GPU_TEXTURE_DECODING{
     {System::GFX, "Settings", "EnableGPUTextureDecoding"}, false};
 const ConfigInfo<bool> GFX_ENABLE_COMPUTE_TEXTURE_ENCODING{ { System::GFX, "Settings", "EnableComputeTextureEncoding" }, false };
@@ -88,7 +88,7 @@ const ConfigInfo<bool> GFX_FAST_DEPTH_CALC{{System::GFX, "Settings", "FastDepthC
 const ConfigInfo<u32> GFX_MSAA{{System::GFX, "Settings", "MSAA"}, 1};
 const ConfigInfo<bool> GFX_SSAA{{System::GFX, "Settings", "SSAA"}, false};
 const ConfigInfo<int> GFX_EFB_SCALE{{System::GFX, "Settings", "EFBScale"},
-                                    static_cast<int>(SCALE_1X)};
+                                    static_cast<int>(SCALE_AUTO)};
 const ConfigInfo<bool> GFX_TEXFMT_OVERLAY_ENABLE{{System::GFX, "Settings", "TexFmtOverlayEnable"},
                                                  false};
 const ConfigInfo<bool> GFX_TEXFMT_OVERLAY_CENTER{{System::GFX, "Settings", "TexFmtOverlayCenter"},
@@ -194,7 +194,7 @@ const ConfigInfo<bool> GFX_HACK_EFB_EMULATE_FORMAT_CHANGES{
 const ConfigInfo<bool> GFX_HACK_VERTEX_ROUDING{{System::GFX, "Hacks", "VertexRounding"}, false};
 
 const ConfigInfo<bool> GFX_HACK_FORCE_DUAL_SOURCE{ { System::GFX, "Hacks", "ForceDualSourceBlend" }, false };
-const ConfigInfo<bool> GFX_HACK_FULL_ASYNC_SHADER_COMPILATION{ { System::GFX, "Hacks", "FullAsyncShaderCompilation" }, false };
+const ConfigInfo<bool> GFX_HACK_FULL_ASYNC_SHADER_COMPILATION{ { System::GFX, "Hacks", "FullAsyncShaderCompilation" }, true };
 const ConfigInfo<bool> GFX_HACK_LAST_HISTORY_EFBTORAM{ { System::GFX, "Hacks", "LastStoryEFBToRam" }, false };
 const ConfigInfo<bool> GFX_HACK_FORCE_LOGICOP_BLEND{ { System::GFX, "Hacks", "ForceLogicOpBlend" }, false };
 const ConfigInfo<int> GFX_HACK_CULL_MODE{ { System::GFX, "Hacks", "CullMode" }, 0 };
