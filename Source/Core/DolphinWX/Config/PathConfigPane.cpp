@@ -50,9 +50,36 @@ void PathConfigPane::InitializeGUI()
   m_dump_path_dirpicker =
     new wxDirPickerCtrl(this, wxID_ANY, wxEmptyString, _("Choose a dump directory:"),
       wxDefaultPosition, wxDefaultSize, wxDIRP_USE_TEXTCTRL | wxDIRP_SMALL);
-  m_wii_sdcard_filepicker = new wxFilePickerCtrl(
-    this, wxID_ANY, wxEmptyString, _("Choose an SD Card file:"), wxFileSelectorDefaultWildcardStr,
-    wxDefaultPosition, wxDefaultSize, wxDIRP_USE_TEXTCTRL | wxDIRP_SMALL);
+
+ // On prépare le chemin souhaité
+std::string default_sd_path = "../user/wii/sd.raw";
+
+m_wii_sdcard_filepicker = new wxFilePickerCtrl(
+    this, wxID_ANY, 
+    StrToWxStr(default_sd_path), // Chemin affiché par défaut
+    _("Choose an SD Card file:"), 
+    wxFileSelectorDefaultWildcardStr,
+    wxDefaultPosition, wxDefaultSize, 
+    wxFLP_USE_TEXTCTRL | wxFLP_SMALL);
+
+// 1. Définir les chemins par défaut
+wxArrayString default_paths;
+default_paths.Add(wxT("../User/Launcher"));
+default_paths.Add(wxT("../Games"));
+
+// 2. Parcourir ces chemins et les ajouter s'ils n'existent pas
+for (size_t i = 0; i < default_paths.GetCount(); ++i)
+{
+    if (m_iso_paths_listbox->FindString(default_paths[i]) == wxNOT_FOUND)
+    {
+        m_iso_paths_listbox->Append(default_paths[i]);
+    }
+}
+
+// 3. Forcer la mise à jour interne de Dolphin (optionnel mais recommandé)
+AddPendingEvent(wxCommandEvent(wxDOLPHIN_CFG_RESCAN_LIST));
+
+SaveISOPathChanges();
 
   const int space5 = FromDIP(5);
 

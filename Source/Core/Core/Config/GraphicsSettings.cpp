@@ -40,13 +40,13 @@ const ConfigInfo<bool> GFX_LOG_RENDER_TIME_TO_FILE{{System::GFX, "Settings", "Lo
 const ConfigInfo<bool> GFX_OVERLAY_STATS{{System::GFX, "Settings", "OverlayStats"}, false};
 const ConfigInfo<bool> GFX_OVERLAY_PROJ_STATS{{System::GFX, "Settings", "OverlayProjStats"}, false};
 const ConfigInfo<bool> GFX_DUMP_TEXTURES{{System::GFX, "Settings", "DumpTextures"}, false};
-const ConfigInfo<bool> GFX_HIRES_TEXTURES{{System::GFX, "Settings", "HiresTextures"}, false};
+const ConfigInfo<bool> GFX_HIRES_TEXTURES{{System::GFX, "Settings", "HiresTextures"}, true};
 const ConfigInfo<bool> GFX_HIRES_MATERIAL_MAPS{ { System::GFX, "Settings", "HiresMaterialMaps" }, false };
 const ConfigInfo<bool> GFX_HIRES_MATERIAL_MAPS_BUILD{ { System::GFX, "Settings", "HiresMaterialMapsBuild" }, false };
 const ConfigInfo<bool> GFX_CACHE_HIRES_TEXTURES{{System::GFX, "Settings", "CacheHiresTextures"},
                                                 false};
 const ConfigInfo<bool> GFX_WAIT_CACHE_HIRES_TEXTURES{{System::GFX, "Settings", "WaitForCachedHiresTextures"},
-                                                false};
+                                                true};
 const ConfigInfo<bool> GFX_DUMP_EFB_TARGET{{System::GFX, "Settings", "DumpEFBTarget"}, false};
 const ConfigInfo<bool> GFX_DUMP_FRAMES_AS_IMAGES{{System::GFX, "Settings", "DumpFramesAsImages"},
                                                  false};
@@ -60,7 +60,7 @@ const ConfigInfo<std::string> GFX_DUMP_CODEC{{System::GFX, "Settings", "DumpCode
 const ConfigInfo<std::string> GFX_DUMP_PATH{{System::GFX, "Settings", "DumpPath"}, ""};
 const ConfigInfo<int> GFX_BITRATE_KBPS{{System::GFX, "Settings", "BitrateKbps"}, 2500};
 const ConfigInfo<bool> GFX_INTERNAL_RESOLUTION_FRAME_DUMPS{
-    {System::GFX, "Settings", "InternalResolutionFrameDumps"}, false};
+    {System::GFX, "Settings", "InternalResolutionFrameDumps"}, 0};
 const ConfigInfo<bool> GFX_ENABLE_GPU_TEXTURE_DECODING{
     {System::GFX, "Settings", "EnableGPUTextureDecoding"}, false};
 const ConfigInfo<bool> GFX_ENABLE_COMPUTE_TEXTURE_ENCODING{ { System::GFX, "Settings", "EnableComputeTextureEncoding" }, false };

@@ -21,10 +21,10 @@
 #define DOLPHIN_DATA_DIR "Library/Application Support/Dolphin"
 #elif defined ANDROID
 #define USERDATA_DIR "user"
-#define DOLPHIN_DATA_DIR "/sdcard/ishiiruka"
+#define DOLPHIN_DATA_DIR "/sdcard/Ishiiruka"
 #else
 #define USERDATA_DIR "user"
-#define DOLPHIN_DATA_DIR "FasterPPlus"
+#define DOLPHIN_DATA_DIR "P+FR/Ishiiruka"
 #endif
 
 // Dirs in both User and Sys

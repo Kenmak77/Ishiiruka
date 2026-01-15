@@ -381,24 +381,30 @@ void DolphinApp::AfterInit()
 #endif
 
 #ifdef _WIN32
-  if (File::Exists("./Updater-temp.exe") && File::Exists("./Updater.exe"))
+  // Vérifie si la version temporaire (téléchargée) et l'originale existent dans le dossier parent
+  if (File::Exists("../Dolphin-temp.exe") && File::Exists("../Dolphin.exe"))
   {
-    File::Delete("./Updater-temp.exe");
+    // Si l'original existe déjà, on supprime le temporaire (ou l'inverse selon votre logique d'installation)
+    File::Delete("../Dolphin-temp.exe");
   }
-  else if (File::Exists("./Updater-temp.exe") && !File::Exists("./Updater.exe"))
+  else if (File::Exists("../Dolphin-temp.exe") && !File::Exists("../Dolphin.exe"))
   {
-    File::Rename("./Updater-temp.exe", "./Updater.exe");
+    // Si seul le temporaire existe, on le remet en tant qu'exécutable principal
+    File::Rename("../Dolphin-temp.exe", "../Dolphin.exe");
   }
 #endif
 
 #ifdef __APPLE__
-  if (File::Exists(File::GetBundleDirectory() + "Contents/Resources/Updater-temp") && File::Exists(File::GetBundleDirectory() + "Contents/Resources/Updater"))
+  // On remonte généralement de plusieurs niveaux pour sortir du Bundle .app
+  std::string parentDir = File::GetBundleDirectory() + "../"; 
+  
+  if (File::Exists(parentDir + "Dolphin-temp") && File::Exists(parentDir + "Dolphin"))
   {
-    File::Delete(File::GetBundleDirectory() + "Contents/Resources/Updater-temp");
+    File::Delete(parentDir + "Dolphin-temp");
   }
-  else if (File::Exists(File::GetBundleDirectory() + "Contents/Resources/Updater-temp") && !File::Exists(File::GetBundleDirectory() + "Contents/Resources/Updater"))
+  else if (File::Exists(parentDir + "Dolphin-temp") && !File::Exists(parentDir + "Dolphin"))
   {
-    File::Rename(File::GetBundleDirectory() + "Contents/Resources/Updater-temp", File::GetBundleDirectory() + "Contents/Resources/Updater");
+    File::Rename(parentDir + "Dolphin-temp", parentDir + "Dolphin");
   }
 #endif
 
@@ -571,18 +577,22 @@ void DolphinApp::CheckUpdate()
       "\nBack up your files if there's something you want to keep!"),
       _("Update"), wxYES_NO, main_frame);
 
-    if (answer == wxYES)
-    {
+   if (answer == wxYES)
+{
 #ifdef _WIN32
-      if (File::Exists("./Updater.exe"))
-        File::Rename("./Updater.exe", "./Updater-temp.exe");
-#elif defined(__APPLE__)
-      if (File::Exists(File::GetBundleDirectory() + "Contents/Resources/Updater"))
-        File::Rename(File::GetBundleDirectory() + "Contents/Resources/Updater", File::GetBundleDirectory() + "Contents/Resources/Updater-temp");
-#endif
-      DolphinApp::UpdateApp();
-      main_frame->Close();
+    // On cherche Dolphin.exe dans le dossier parent (../Dolphin.exe)
+    if (File::Exists("../Dolphin.exe"))
+    {
+        // On peut le renommer ou simplement préparer l'appel
+        // Si vous voulez vraiment le renommer comme votre ancien code :
+        File::Rename("../Dolphin.exe", "../Dolphin-old.exe");
     }
+#elif defined(__APPLE__)
+    // Logique Apple à adapter si nécessaire
+#endif
+    DolphinApp::UpdateApp();
+    main_frame->Close();
+}
     else if (answer == wxNO && Config::Get(Config::MAIN_UPDATE_CHECK) != false)
     {
       Config::SetBaseOrCurrent(Config::MAIN_UPDATE_CHECK, false);
@@ -593,13 +603,18 @@ void DolphinApp::CheckUpdate()
 void DolphinApp::UpdateApp()
 {
 #ifdef _WIN32
-  std::string path = "\"" + File::GetExeDirectory() + "\"";
-  std::string command = "start /d " + path + " Updater-temp.exe " + "\"" + updateLink + "\" " + path;
-  RunSystemCommand(command);
+    // On récupère le chemin du dossier actuel
+    std::string currentPath = File::GetExeDirectory(); 
+    
+    // On construit le chemin vers le dossier parent
+    // "cd .." permet de remonter d'un cran avant de lancer l'exe
+    std::string command = "cmd /c \"cd /d " + currentPath + " && cd .. && start Dolphin.exe\"";
+    
+    RunSystemCommand(command);
 #elif defined(__APPLE__)
-  chdir(File::GetBundleDirectory().c_str());
-  std::string command = "open -a /Applications/Utilities/Terminal.app Contents/Resources/Updater";
-  RunSystemCommand(command);
+    // Remonter d'un dossier sur macOS (pour une structure de Bundle)
+    std::string command = "open ../../../Dolphin.app"; 
+    RunSystemCommand(command);
 #endif
 }
 #endif

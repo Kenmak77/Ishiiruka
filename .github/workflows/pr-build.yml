@@ -171,13 +171,14 @@ jobs:
         run: |
           chmod +x ./build-linux.sh
           ./build-linux.sh
-
+          
       - name: "Build AppImage"
         if: success()
         working-directory: ${{ github.workspace }}
         run: |
           chmod +x ./build-appimage.sh
           ./build-appimage.sh
+          mv *.AppImage IshiirukaP+FR.appimage
 
       - name: "Package"
         if: success()
@@ -185,8 +186,8 @@ jobs:
         run: |
           mkdir artifact
           FILE_NAME=${{ env.CURR_DATE }}-${{ env.GIT_HASH }}-${{ env.GIT_TAG }}-linux.zip
-          chmod +x ./*.AppImage
-          zip -r "${FILE_NAME}" ./*.AppImage*
+          chmod +x ./IshiirukaP+FR.appimage
+          zip -j "${FILE_NAME}" ./IshiirukaP+FR.appimage
           mv "${FILE_NAME}" ./artifact/
 
       - name: "Publish"
