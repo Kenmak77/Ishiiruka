@@ -55,27 +55,32 @@ void PathConfigPane::InitializeGUI()
 
   // --- PARTIE CARTE SD (FORCAGE RELATIF) ---
 
-// 1. Calcul du chemin
+// 1. Calcul du chemin relatif
+  std::string relative_sd = "../user/wii/sd.raw";
+  
+  // 2. On récupère la config actuelle
   std::string current_sd = SConfig::GetInstance().m_strWiiSDCardPath;
-  if (current_sd.empty())
+
+  // 3. Si la config est vide OU contient un chemin absolu (qui commence par C: ou /)
+  // on force notre chemin relatif
+  if (current_sd.empty() || current_sd.find(":") != std::string::npos)
   {
-      current_sd = "../user/wii/sd.raw";
+      current_sd = relative_sd;
       SConfig::GetInstance().m_strWiiSDCardPath = current_sd;
   }
 
-  // 2. Création de l'objet (Utilisation de wxFLP_USE_TEXTCTRL)
-  // Note : On utilise wxFLP_SMALL pour rester cohérent avec ton code
+  // 4. Création du picker
   m_wii_sdcard_filepicker = new wxFilePickerCtrl(
     this, wxID_ANY, StrToWxStr(current_sd), 
     _("Choose an SD Card file:"), wxFileSelectorDefaultWildcardStr,
     wxDefaultPosition, wxDefaultSize, wxFLP_USE_TEXTCTRL | wxFLP_SMALL);
 
-  this->CallAfter([this, current_sd]() {
-    if (m_wii_sdcard_filepicker && m_wii_sdcard_filepicker->GetTextCtrl())
-    {
-        m_wii_sdcard_filepicker->GetTextCtrl()->ChangeValue(StrToWxStr(current_sd));
-    }
-});
+  // 5. Force la valeur textuelle brute (sans résolution de chemin)
+  if (m_wii_sdcard_filepicker->GetTextCtrl())
+  {
+      m_wii_sdcard_filepicker->GetTextCtrl()->SetValue(StrToWxStr(current_sd));
+  }
+
 
 // 1. Définir les chemins que l'on veut forcer
   wxArrayString paths_to_add;
@@ -139,6 +144,28 @@ void PathConfigPane::InitializeGUI()
   main_sizer->AddSpacer(space5);
 
   SetSizer(main_sizer);
+}
+
+bool PathConfigPane::TransferDataToWindow()
+{
+    // 1. On laisse Dolphin faire son chargement habituel (qui met le chemin complet)
+    bool result = wxPanel::TransferDataToWindow();
+
+    // 2. On passe juste après pour corriger le texte par notre relatif
+    if (m_wii_sdcard_filepicker && m_wii_sdcard_filepicker->GetTextCtrl())
+    {
+        std::string current_sd = SConfig::GetInstance().m_strWiiSDCardPath;
+        
+        // Si c'est vide ou si c'est un chemin absolu, on remet le nôtre
+        if (current_sd.empty() || current_sd.find(":") != std::string::npos)
+        {
+            current_sd = "../user/wii/sd.raw";
+        }
+        
+        m_wii_sdcard_filepicker->GetTextCtrl()->ChangeValue(StrToWxStr(current_sd));
+    }
+
+    return result;
 }
 
 void PathConfigPane::LoadGUIValues()

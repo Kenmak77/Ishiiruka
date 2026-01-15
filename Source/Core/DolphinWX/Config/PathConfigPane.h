@@ -17,6 +17,8 @@ class PathConfigPane final : public wxPanel
 public:
   PathConfigPane(wxWindow* parent, wxWindowID id);
 
+   bool TransferDataToWindow() override;
+
 private:
   void InitializeGUI();
   void LoadGUIValues();
@@ -32,6 +34,7 @@ private:
   void OnNANDRootChanged(wxCommandEvent&);
   void OnDumpPathChanged(wxCommandEvent&);
   void OnSdCardPathChanged(wxCommandEvent&);
+
 
   void SaveISOPathChanges();
 

@@ -388,10 +388,17 @@ bool BootCore(std::unique_ptr<BootParameters> boot)
     StartUp.SelectedLanguage = 0;
   }
 
-  // Some NTSC Wii games such as Doc Louis's Punch-Out!! and
-  // 1942 (Virtual Console) crash if the PAL60 option is enabled
-  if (StartUp.bWii && ntsc)
+  // Activer PAL60 par défaut
+  if (StartUp.bWii)
     Config::SetCurrent(Config::SYSCONF_PAL60, true);
+
+  // Ton code existant qui le désactive UNIQUEMENT pour les jeux qui crashent
+  if (StartUp.bWii && ntsc)
+    Config::SetCurrent(Config::SYSCONF_PAL60, false);
+
+  // Sauvegarde dans le fichier SYSCONF réel de la NAND
+  if (StartUp.bWii)
+    ConfigLoaders::SaveToSYSCONF(Config::LayerType::Meta);
 
   // Ensure any new settings are written to the SYSCONF
   if (StartUp.bWii)
