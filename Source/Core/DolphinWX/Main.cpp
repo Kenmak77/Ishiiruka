@@ -577,47 +577,31 @@ void DolphinApp::CheckUpdate()
       "\nBack up your files if there's something you want to keep!"),
       _("Update"), wxYES_NO, main_frame);
 
-   if (answer == wxYES)
-{
-#ifdef _WIN32
-    // On cherche Dolphin.exe dans le dossier parent (../Dolphin.exe)
-    if (File::Exists("../Dolphin.exe"))
+    if (answer == wxYES)
     {
-        // On peut le renommer ou simplement préparer l'appel
-        // Si vous voulez vraiment le renommer comme votre ancien code :
-        File::Rename("../Dolphin.exe", "../Dolphin-old.exe");
+      DolphinApp::UpdateApp();
+      main_frame->Close();
     }
-#elif defined(__APPLE__)
-    // Logique Apple à adapter si nécessaire
-#endif
-    DolphinApp::UpdateApp();
-    main_frame->Close();
-}
     else if (answer == wxNO && Config::Get(Config::MAIN_UPDATE_CHECK) != false)
     {
       Config::SetBaseOrCurrent(Config::MAIN_UPDATE_CHECK, false);
     }
-  }
-}
+  } // Ferme le else
+} // Ferme CheckUpdate
 
 void DolphinApp::UpdateApp()
 {
 #ifdef _WIN32
-    // On récupère le chemin du dossier actuel
-    std::string currentPath = File::GetExeDirectory(); 
-    
-    // On construit le chemin vers le dossier parent
-    // "cd .." permet de remonter d'un cran avant de lancer l'exe
-    std::string command = "cmd /c \"cd /d " + currentPath + " && cd .. && start Dolphin.exe\"";
-    
-    RunSystemCommand(command);
+  std::string path = File::GetExeDirectory(); 
+  std::string command = "cmd /c \"cd /d \"" + path + "\" && cd .. && start \"\" Dolphin.exe\"";
+  RunSystemCommand(command);
 #elif defined(__APPLE__)
-    // Remonter d'un dossier sur macOS (pour une structure de Bundle)
-    std::string command = "open ../../../Dolphin.app"; 
-    RunSystemCommand(command);
+  chdir(File::GetBundleDirectory().c_str());
+  std::string command = "open ../../../Dolphin.app";
+  RunSystemCommand(command);
 #endif
 }
-#endif
+#endif // C'est ce #endif qui ferme le bloc surligné tout en haut
 
 // ------------
 // Talk to GUI

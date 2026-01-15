@@ -51,35 +51,48 @@ void PathConfigPane::InitializeGUI()
     new wxDirPickerCtrl(this, wxID_ANY, wxEmptyString, _("Choose a dump directory:"),
       wxDefaultPosition, wxDefaultSize, wxDIRP_USE_TEXTCTRL | wxDIRP_SMALL);
 
- // On prépare le chemin souhaité
-std::string default_sd_path = "../user/wii/sd.raw";
+  // 1. On récupère la config actuelle
+  std::string current_sd = SConfig::GetInstance().m_strWiiSDCardPath;
 
-m_wii_sdcard_filepicker = new wxFilePickerCtrl(
+  // 2. Si la config est vide, on définit le chemin par défaut
+  if (current_sd.empty())
+  {
+      current_sd = "../user/wii/sd.raw";
+      SConfig::GetInstance().m_strWiiSDCardPath = current_sd;
+      // Optionnel : File::SetUserPath(F_WIISDCARD_IDX, current_sd);
+  }
+
+  // 3. On crée l'objet UNE SEULE FOIS avec le bon chemin
+  m_wii_sdcard_filepicker = new wxFilePickerCtrl(
     this, wxID_ANY, 
-    StrToWxStr(default_sd_path), // Chemin affiché par défaut
-    _("Choose an SD Card file:"), 
-    wxFileSelectorDefaultWildcardStr,
-    wxDefaultPosition, wxDefaultSize, 
+    StrToWxStr(current_sd), 
+    _("Choose an SD Card file:"),  
+    wxFileSelectorDefaultWildcardStr, 
+    wxDefaultPosition, wxDefaultSize,  
     wxFLP_USE_TEXTCTRL | wxFLP_SMALL);
 
-// 1. Définir les chemins par défaut
-wxArrayString default_paths;
-default_paths.Add(wxT("../User/Launcher"));
-default_paths.Add(wxT("../Games"));
+// 1. Définir les chemins que l'on veut forcer
+  wxArrayString paths_to_add;
+  paths_to_add.Add(wxT("../User/Launcher"));
+  paths_to_add.Add(wxT("../Games"));
 
-// 2. Parcourir ces chemins et les ajouter s'ils n'existent pas
-for (size_t i = 0; i < default_paths.GetCount(); ++i)
-{
-    if (m_iso_paths_listbox->FindString(default_paths[i]) == wxNOT_FOUND)
-    {
-        m_iso_paths_listbox->Append(default_paths[i]);
-    }
-}
+  // 2. Les ajouter seulement s'ils ne sont pas déjà là
+  bool added = false;
+  for (const auto& path : paths_to_add)
+  {
+      if (m_iso_paths_listbox->FindString(path) == wxNOT_FOUND)
+      {
+          m_iso_paths_listbox->Append(path);
+          added = true;
+      }
+  }
 
-// 3. Forcer la mise à jour interne de Dolphin (optionnel mais recommandé)
-AddPendingEvent(wxCommandEvent(wxDOLPHIN_CFG_RESCAN_LIST));
-
-SaveISOPathChanges();
+  // 3. Sauvegarder si nécessaire
+  if (added)
+  {
+      SaveISOPathChanges();
+      AddPendingEvent(wxCommandEvent(wxDOLPHIN_CFG_RESCAN_LIST));
+  }
 
   const int space5 = FromDIP(5);
 
