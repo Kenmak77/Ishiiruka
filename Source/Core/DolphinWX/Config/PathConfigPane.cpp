@@ -70,6 +70,13 @@ void PathConfigPane::InitializeGUI()
     _("Choose an SD Card file:"), wxFileSelectorDefaultWildcardStr,
     wxDefaultPosition, wxDefaultSize, wxFLP_USE_TEXTCTRL | wxFLP_SMALL);
 
+  this->CallAfter([this, current_sd]() {
+    if (m_wii_sdcard_filepicker && m_wii_sdcard_filepicker->GetTextCtrl())
+    {
+        m_wii_sdcard_filepicker->GetTextCtrl()->ChangeValue(StrToWxStr(current_sd));
+    }
+});
+
 // 1. Définir les chemins que l'on veut forcer
   wxArrayString paths_to_add;
   paths_to_add.Add(wxT("../User/Launcher"));
