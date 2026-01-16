@@ -569,12 +569,12 @@ void DolphinApp::CheckUpdate()
   {
     INFO_LOG(COMMON, "Update status: we are not up to date.");
     updateAvailable = true;
-    std::string changelog = obj["changelog"].get<std::string>();
+    std::string changelog = obj["changelog2"].get<std::string>();
     updateLink = obj["download-page-windows"].get<std::string>();
     int answer = wxMessageBox(_(
       "An update is available. Would you like to update? Changelog:\n\n" + changelog +
-      "\n\nWARNING! IF YOU HAVE ANY CUSTOM CONTENT THIS MAY REPLACE IT!"
-      "\nBack up your files if there's something you want to keep!"),
+      "\n\nWARNING! YOU CAN'T UPDATE WITH THIS DOLPHIN!"
+      "\nOnly with the other"),
       _("Update"), wxYES_NO, main_frame);
 
     if (answer == wxYES)
