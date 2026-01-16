@@ -15,6 +15,8 @@ namespace Config
 {
 // Main.Core
 
+const ConfigInfo<std::string> MAIN_WII_SD_CARD_PATH{{System::Main, "Core", "WiiSDCardPath"}, "User/Wii/sd.raw"};
+
 const ConfigInfo<bool> MAIN_SKIP_IPL{{System::Main, "Core", "SkipIPL"}, true};
 const ConfigInfo<int> MAIN_CPU_CORE{{System::Main, "Core", "CPUCore"}, PowerPC::DefaultCPUCore()};
 const ConfigInfo<bool> MAIN_FASTMEM{{System::Main, "Core", "Fastmem"}, true};

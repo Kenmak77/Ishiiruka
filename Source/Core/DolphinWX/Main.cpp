@@ -78,6 +78,7 @@
 #include <dlfcn.h>
 #include <unistd.h>
 #endif
+#include <Core/Config/MainSettings.cpp>
 
 #ifdef _WIN32
 
@@ -348,12 +349,25 @@ void DolphinApp::MacOpenFile(const wxString& fileName)
 
 void DolphinApp::AfterInit()
 {
+  // --- AJOUT POUR FORCER LA SD CARD ---
+  // On récupère le chemin vers l'exécutable et on pointe vers User/Wii/sd.raw
+  // File::GetExeDirectory() donne le dossier de l'exe (ex: P+FR/Ishiiruka/)
+  // On remonte d'un cran pour aller dans le dossier parent commun si besoin
+  
+  std::string force_sd_path = File::GetExeDirectory() + "../../User/Wii/sd.raw";
+  
+  // On injecte le chemin dans la configuration active de Dolphin
+  // Cela écrasera ce qui est écrit dans le .ini pour la session actuelle
+  SConfig::GetInstance().m_strWiiSDCardPath = force_sd_path;
+  // ------------------------------------
+
 #ifdef USE_DISCORD_PRESENCE
   if (Config::Get(Config::MAIN_USE_DISCORD_PRESENCE))
   {
     Discord::Init();
   }
 #endif
+
 
 #if defined(USE_ANALYTICS) && USE_ANALYTICS
   if (!SConfig::GetInstance().m_analytics_permission_asked)

@@ -12,6 +12,7 @@ namespace Config
 {
 // Main.Core
 
+extern const ConfigInfo<std::string> MAIN_WII_SD_CARD_PATH;
 extern const ConfigInfo<bool> MAIN_SKIP_IPL;
 extern const ConfigInfo<int> MAIN_CPU_CORE;
 extern const ConfigInfo<bool> MAIN_FASTMEM;
