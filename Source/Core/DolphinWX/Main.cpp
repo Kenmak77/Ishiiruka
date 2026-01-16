@@ -361,6 +361,13 @@ void DolphinApp::AfterInit()
   SConfig::GetInstance().m_strWiiSDCardPath = force_sd_path;
   // ------------------------------------
 
+  // 1. On change le chemin (ton code actuel)
+Config::SetBaseOrCurrent(Config::MAIN_WII_SD_CARD_PATH, force_sd_path);
+
+// 2. ON FORCE LA MISE À JOUR IMMÉDIATE
+// Cela synchronise la mémoire vive avec la nouvelle valeur
+SConfig::GetInstance().LoadSettings();
+
 #ifdef USE_DISCORD_PRESENCE
   if (Config::Get(Config::MAIN_USE_DISCORD_PRESENCE))
   {
