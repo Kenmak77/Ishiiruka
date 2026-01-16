@@ -570,7 +570,6 @@ void DolphinApp::CheckUpdate()
     INFO_LOG(COMMON, "Update status: we are not up to date.");
     updateAvailable = true;
     std::string changelog = obj["changelog2"].get<std::string>();
-    updateLink = obj["download-page-windows"].get<std::string>();
     int answer = wxMessageBox(_(
       "An update is available. Would you like to update?\n\n" + changelog +
       "\n\nWarning! You can't update derectly in this Dolphin"),
