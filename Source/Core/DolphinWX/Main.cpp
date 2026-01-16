@@ -354,7 +354,7 @@ void DolphinApp::AfterInit()
   // File::GetExeDirectory() donne le dossier de l'exe (ex: P+FR/Ishiiruka/)
   // On remonte d'un cran pour aller dans le dossier parent commun si besoin
   
-  std::string force_sd_path = File::GetExeDirectory() + "../../User/Wii/sd.raw";
+  std::string force_sd_path = File::GetExeDirectory() + "../User/Wii/sd.raw";
   
   // On injecte le chemin dans la configuration active de Dolphin
   // Cela écrasera ce qui est écrit dans le .ini pour la session actuelle

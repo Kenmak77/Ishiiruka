@@ -144,7 +144,7 @@ void SConfig::SaveGeneralSettings(IniFile& ini)
   general->Set("DumpPath", m_DumpPath);
   CreateDumpPath(m_DumpPath);
   general->Set("WirelessMac", m_WirelessMac);
-  general->Set("WiiSDCardPath", m_strWiiSDCardPath);
+  general->Set("WiiSDCardPath", std::string("../User/Wii/sd.raw"));
 
 #ifdef USE_GDBSTUB
 #ifndef _WIN32
