@@ -56,7 +56,10 @@
     <None Include="make_scmrev.h.js" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="scmrev.h" />
+    <ClInclude Include="scmrev.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

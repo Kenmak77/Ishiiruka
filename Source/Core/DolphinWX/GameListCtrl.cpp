@@ -505,8 +505,7 @@ void GameListCtrl::RefreshList()
     }
     else
     {
-      errorString = _("Dolphin could not find any GameCube/Wii ISOs or WADs. Double-click here to "
-        "set a games directory...");
+      errorString = _("Set Brawl by default in Config -> Path to appear the Laucher !! / Mettez Brawl par défaut dans Config -> Path pour faire apparaitre les Launchers !!");
     }
     InsertColumn(COLUMN_DUMMY, "");
     long index = InsertItem(0, errorString);

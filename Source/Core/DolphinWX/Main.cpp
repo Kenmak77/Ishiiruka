@@ -581,13 +581,16 @@ void DolphinApp::CheckUpdate()
   }
   picojson::object obj = json.get<picojson::object>();
 
-  if (obj["hash"].get<std::string>() == Common::scm_rev_git_str.c_str() && obj["version"].get<std::string>() == Common::scm_desc_str.c_str())
-  {
+  INFO_LOG(COMMON, "DEBUG - Version Distante: '%s'", obj["version"].get<std::string>().c_str());
+  INFO_LOG(COMMON, "DEBUG - Version Locale:   '%s'", Common::scm_desc_str.c_str());
+
+  if (obj["version"].get<std::string>() == Common::scm_desc_str.c_str())
+{
     INFO_LOG(COMMON, "Update status: we are up to date.");
     updateAvailable = false;
-  }
-  else
-  {
+}
+else
+{
     INFO_LOG(COMMON, "Update status: we are not up to date.");
     updateAvailable = true;
     std::string changelog = obj["changelog2"].get<std::string>();

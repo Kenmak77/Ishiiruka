@@ -19,9 +19,6 @@ namespace Common
 #endif
 
 const std::string scm_rev_str = "Ishiiruka-Dolphin"
-#if !SCM_IS_MASTER
-"[" SCM_BRANCH_STR "] "
-#endif
 
 #ifdef __INTEL_COMPILER
 " " BUILD_TYPE_STR " " VERSION_STR "-ICC";
@@ -29,11 +26,14 @@ const std::string scm_rev_str = "Ishiiruka-Dolphin"
 " " BUILD_TYPE_STR " " VERSION_STR;
 #endif
 
-const std::string scm_rev_git_str = SCM_REV_STR;
+// On remplace SCM_REV_STR par ton hash en dur
+const std::string scm_rev_git_str = "22e0c13e61691423575b3223dcd8fd821fdc4003";
 const std::string scm_rev_cache_str = "202007302245";
-const std::string scm_desc_str = VERSION_STR;
-const std::string scm_branch_str = SCM_BRANCH_STR;
-const std::string scm_distributor_str = SCM_DISTRIBUTOR_STR;
+
+const std::string scm_desc_str = VERSION_STR; 
+
+const std::string scm_branch_str = "master";
+const std::string scm_distributor_str = "Ishiiruka-P-FR";
 
 #ifdef _WIN32
 const std::string netplay_dolphin_ver = VERSION_STR " Win";
